@@ -5,8 +5,28 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 
-QueenPlacingFinderService chess = new();
 Stopwatch stopwatch = new();
+QueenPlacingFinderService chess;
+
+if (args.Length > 0)
+{
+    try
+    {
+        var k = Convert.ToUInt16(args[0]);
+        chess = new(k, k);
+    }
+
+    catch (Exception)
+    {
+        Console.WriteLine("Не могу разобрать значение аргумента. Перехожу на стандартные настройки");
+        chess = new();
+    }
+}
+
+else
+{
+    chess = new();
+}
 
 Console.WriteLine($"Количество доступных процессов: {Environment.ProcessorCount}");
 Console.WriteLine($"Занято памяти до начала вычисления: {GetMemoryAllocMessage(true)} МБ.");
