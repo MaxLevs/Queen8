@@ -3,12 +3,12 @@ name: .NET
 on:
   push:
     tags:
-    - '*'
+    - 'v*'
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
       id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
       with:
-        fallback: 0.0.0.0
+        fallback: v0.0.0.0
 
     - name: 'Checks'
       run: echo "Archifact name is Queen8_${{ steps.previoustag.outputs.tag }}.zip"
