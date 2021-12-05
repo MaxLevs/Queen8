@@ -1,0 +1,53 @@
+name: .NET
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Publish
+      run: dotnet publish --no-restore --no-build --verbosity normal -o published/
+
+    - name: 'Get Previous tag'
+      id: previoustag
+      uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      with:
+        fallback: 0.0.0.0
+
+    - name: 'Checks'
+      run: echo "Archifact name is Queen8_${{ steps.previoustag.outputs.tag }}.zip"
+
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
+      with:
+        type: 'zip'
+        path: 'published/*'
+        filename: "Queen8_${{ steps.previoustag.outputs.tag }}.zip"
+
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "Queen8_${{ steps.previoustag.outputs.tag }}.zip"
+        token: ${{ secrets.SECRET_TOKEN }}
